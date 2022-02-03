@@ -47,10 +47,21 @@ function App() {
 
     dispatch({type:'ADD_NOTE', payload: newNote})
 
+    inputRef.current.value = ''
+  }
+
+  const dropNote = e => {
+    e.target.style.left = `${e.pageX - 50}px`
+    e.target.style.top = `${e.pageY - 50}px`
+  }
+
+  const dragOver = e => {
+    e.stopPropagation()
+    e.preventDefault()
   }
 
   return (
-    <div className="app">
+    <div className="app" onDragOver = {dragOver}>
       <h1>
         Sticky Notes
       </h1>
@@ -58,6 +69,22 @@ function App() {
         <textarea ref={inputRef} placeholder="Create a new note..."></textarea>
         <button type="submit">Add</button>
       </form>
+    {notesState
+      .notes
+      .map(notes => (
+        <div className="note" 
+             key={notes.id} 
+             style={{transform: `rotate(${notes.rotate}deg)`}}
+             draggable="true"
+             onDragEnd={dropNote}
+        >
+          <div className="close">
+              <button type="button" class="btn-x">X</button>
+          </div>
+          <pre className="text">{notes.text}</pre>
+        </div>
+      ))
+    }
     </div>
   )
 }

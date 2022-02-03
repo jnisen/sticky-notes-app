@@ -68,17 +68,22 @@ h1 span {
   height: 100%;
   width: 100%;
   white-space: pre-wrap;
-  overflow-y: scroll;
 }
 .note .close {
   width: 15px;
   height: 15px;
   position: absolute;
-  right: 15px;
-  transition: transform 0.3s ease;
+  right: 25px;
 }
-.note .close:hover {
-  transform: scale(1.6);
+.note .close .btn-x {
+  cursor: pointer;
+  color: black;
+  background-color: transparent;
+}
+.note .close .btn-x:hover {
+  background-color: black;
+  color: white;
+  opacity: 0.6;
 }
 
 .note-form {
