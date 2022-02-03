@@ -1,5 +1,7 @@
 # sticky-notes-app
-Example React Project using UseReducer
+Example React Project using UseReducer: Add and Delete Notes with Drag and Drop functionality
+
+I've gone beyond the video and I've implemented useContext and useRef and added components
 
 # Source
 [Link](https://www.youtube.com/watch?v=KcXsX1XXa2s)
