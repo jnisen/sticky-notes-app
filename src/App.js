@@ -9,45 +9,58 @@ const initialNotesState = {
 }
 
 //Reducer function
-const notesReducer = (prevState, action) =>{
-  switch(action.type){
-      case 'ADD_NOTE': {
-       const newState = {
-         lastNoteCreated: new Date().toTimeString().slice(0,8) , 
-         totalNotes:prevState.notes.length + 1 , 
-         notes: [...prevState.notes, action.payload] 
-        };
+const notesReducer = (prevState, action) => {
+  switch (action.type) {
+    case 'ADD_NOTE': {
+      const newState = {
+        lastNoteCreated: new Date().toTimeString().slice(0, 8),
+        totalNotes: prevState.notes.length + 1,
+        notes: [...prevState.notes, action.payload]
+      };
+      console.log('After ADD_NOTE', newState);
+      return newState;
+    }
 
-        console.log('After ADD_NOTE', newState);
-        return newState;
+    case 'DELETE_NOTE': {
+      const newState = {
+        ...prevState, 
+        totalNotes: prevState.notes.length - 1,
+        notes: prevState.notes.filter(note => note.id !== action.payload.id)
       }
-        
-      default: 
-        
+      console.log('After DELETE_NOTE', newState);
+      return newState;
+    }
+
+    default:
+
   }
 }
 
 
 function App() {
   const inputRef = useRef()
-  const [notesState, dispatch ] = useReducer(notesReducer, initialNotesState)
+  const [notesState, dispatch] = useReducer(notesReducer, initialNotesState)
 
   const addNote = e => {
     e.preventDefault()
 
     const inputValue = inputRef.current.value
-    
+
     if (inputValue.trim() === '') return
-    
+
     const newNote = {
       id: nanoid(),
       text: inputValue,
       rotate: Math.floor(Math.random() * 20)
     }
 
-    dispatch({type:'ADD_NOTE', payload: newNote})
+    dispatch({ type: 'ADD_NOTE', payload: newNote })
 
     inputRef.current.value = ''
+  }
+
+  const deleteNote = note => {
+    dispatch({ type: 'DELETE_NOTE', payload: note })
   }
 
   const dropNote = e => {
@@ -61,30 +74,31 @@ function App() {
   }
 
   return (
-    <div className="app" onDragOver = {dragOver}>
+    <div className="app" onDragOver={dragOver}>
       <h1>
-        Sticky Notes
+        Sticky Notes ({notesState.totalNotes})
+        <span>{notesState.totalNotes > 0 ? `Last created at ${notesState.lastNoteCreated}` : null}</span>
       </h1>
       <form onSubmit={addNote} className="note-form">
         <textarea ref={inputRef} placeholder="Create a new note..."></textarea>
         <button type="submit">Add</button>
       </form>
-    {notesState
-      .notes
-      .map(notes => (
-        <div className="note" 
-             key={notes.id} 
-             style={{transform: `rotate(${notes.rotate}deg)`}}
-             draggable="true"
-             onDragEnd={dropNote}
-        >
-          <div className="close">
-              <button type="button" class="btn-x">X</button>
+      {notesState
+        .notes
+        .map(note => (
+          <div className="note"
+            key={note.id}
+            style={{ transform: `rotate(${note.rotate}deg)` }}
+            draggable="true"
+            onDragEnd={dropNote}
+          >
+            <div className="close" >
+              <button className="btn-x" onClick={() => deleteNote(note)}>X</button>
+            </div>
+            <pre className="text">{note.text}</pre>
           </div>
-          <pre className="text">{notes.text}</pre>
-        </div>
-      ))
-    }
+        ))
+      }
     </div>
   )
 }
